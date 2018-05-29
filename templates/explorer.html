@@ -1,0 +1,59 @@
+{% extends "main.html" %}
+{% block content %}
+
+<script type=text/javascript>
+  $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+</script>
+
+
+<script type=text/javascript>
+  $(function() {
+    $('a#last').bind('click', function() {
+      $.getJSON($SCRIPT_ROOT + '/ajax_get',
+          {
+        verify: "{{last_transaction}}"
+      }, function(responseData) {
+
+          var states_dictionary={ CT: ['alex','harry'], AK:['liza','alex'], TX:['fred', 'harry'] };
+var h = '';
+
+for (key in states_dictionary){
+     h += `${key}: ${states_dictionary[key]}` + '</br>'
+}
+
+$("#result").html(h);
+
+          var h = Object.keys(responseData.result).map(k => `${k}: ${responseData.result[k]}`).join('<br>');
+            $("#last_tr").html(h);
+      });
+      return false;
+    });
+  });
+</script>
+<hr>
+<br><br><h1>Содержимое node_vector:</h1>
+<a href=# id=vector>Показать</a>
+{% for i in node_vector %}
+{{i}}:{{node_vector[i]}}<br>
+{% endfor %}
+<br><br>
+<span id=result_vector></span>
+<br><br>
+<hr>
+<br><br><h1>Explorer:</h1>
+<a href=# id=last>Последние транзакции</a> | Вся база монет | Конкретный кошелек
+<br><br>
+<span id=result></span>
+<br><br>
+Файл nodeinfo config:
+{% for i in atom_system_file %}
+{{atom_system_file[i]}}<br>
+    {% endfor %}
+<br>Последние транзакции:<br><br>
+<span id=last_tr></span>
+<br><br>
+{% for i in last_transaction %}
+Транзакция {{i}}: Данные {{last_transaction[i]}}<br><br>
+{% endfor %}
+<br><br>
+{% endblock %}

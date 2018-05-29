@@ -1,0 +1,11 @@
+{% extends "main.html" %}
+{% block content %}
+<h1>{{verify}}</h1>
+    <h1>Указать файл</h1>
+    <form method=post enctype=multipart/form-data>
+      <p><b>Пароль от кошелька:</b>
+    <textarea name="password_wallet">1</textarea></p><br>
+   <p><input type=file name=file>
+         <input type=submit value="Проверить кошелек">
+    </form>
+{% endblock %}

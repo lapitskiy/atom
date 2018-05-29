@@ -1,0 +1,20 @@
+<html>
+  <head>
+    {% if title %}
+    <title>{{title}} - Atom foundation</title>
+    {% else %}
+    <title>Atom foundation - new blockchain technology based on Atom idea</title>
+    {% endif %}
+  </head>
+  <body>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>window.jQuery || document.write('<script src="{{url_for('static', filename='jquery.min.js') }}">\x3C/script>')</script>
+  <a href="http://localhost:5002/newwallet">Создать новый кошелек</a> |
+  <a href="http://localhost:5002/openwallet">Открыть кошелек</a> |
+<a href="http://localhost:5002/baking">Создать базу с атомами</a>|
+<a href="http://localhost:5001/node">Панель работы с нодой 1</a> |
+  <a href="http://localhost:5004/node">Панель работы с нодой 2</a> |
+<a href="http://localhost:5003/explorer">Explorer</a> |
+    {% block content %}{% endblock %}
+  </body>
+</html>

@@ -1,0 +1,123 @@
+{% extends "main.html" %}
+{% block content %}
+<br><br>
+<hr>
+<b>Node panel:</b><br>
+<hr>
+
+
+<script type=text/javascript>
+  $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+</script>
+
+<script type=text/javascript>
+  $(function() {
+    $('a#calculate').bind('click', function() {
+      $.getJSON($SCRIPT_ROOT + '/ajax_get',
+          {
+        send_adr: $('input[name="send_adr"]').val()
+      }, function(data_back) {
+        $("#result").text(data_back.result['send_adr']);
+      });
+      return false;
+    });
+  });
+</script>
+
+<script type=text/javascript>
+  $(function() {
+    $('a#genesis').bind('click', function() {
+      $.getJSON($SCRIPT_ROOT + '/genesis',
+          {
+        send_txt: $('input[name="send_txt"]').val(),
+        node_adr: $('input[name="node_adr"]').val()
+      }, function(data_back) {
+        $("#result2").text(data_back.result);
+      });
+      return false;
+    });
+  });
+</script>
+
+<script type=text/javascript>
+  $(function() {
+    $('a#zapros').bind('click', function() {
+      $.getJSON($SCRIPT_ROOT + '/zapros',
+          {
+        zapros_adr: $('input[name="zapros_adr"]').val(),
+        ipport: $('input[name="ipport"]').val(),
+        base_node: $('input[name="base_node"]').val()
+      }, function(data_back) {
+        $("#result3").text(data_back.result);
+      });
+      return false;
+    });
+  });
+</script>
+
+<script type=text/javascript>
+  $(function() {
+    $('a#next_key').bind('click', function() {
+      $.getJSON($SCRIPT_ROOT + '/next_key',
+          {
+           base_node: $('input[name="base_node"]').val()
+      }, function(data_back) {
+        $("#result4").text(data_back.result);
+      });
+      return false;
+    });
+  });
+</script>
+
+<script type=text/javascript>
+  $(function() {
+    $('a#make_nonce').bind('click', function() {
+      $.getJSON($SCRIPT_ROOT + '/make_nonce',
+          {
+            zapros_adr: $('input[name="zapros_adr"]').val(),
+            ipport: $('input[name="ipport"]').val(),
+            base_node: $('input[name="base_node"]').val()
+      }, function(data_back) {
+        $("#result5").text(data_back.result);
+      });
+      return false;
+    });
+  });
+</script>
+<br>
+<hr><br>
+    <b>Создание файла config для ноды</b><br>
+    <p>Ваш кошелек atom <input type=text size=20 name=send_adr value="4GBN73Uq97TaXBA1RgRJ8K2mB7Gj">
+    (на этот кошелек будут приходить выплаты)</p>
+    <a href=# id=calculate>Создать файл</a><br><span id=result></span>
+<i>(файл надо поместить в папку chain на вашей ноде, это системный файл базовых настроек)</i>
+<hr>
+    <b>Создание файла genesis и файла genesis node_vector</b><br>
+    <p>Адрес ноды создающей genesis блок <input type=text size=20 name=node_adr value="4GBN73Uq97TaXBA1RgRJ8K2mB7Gj"><br></p>
+    <p>Послание в века <input type=text size=20 name=send_txt value="Залупа конская"> (блок будет тусоваться вечно не изменный)<br></p>
+    <a href=# id=genesis>Создать файл</a><br><span id=result2></span><br>
+<i>(файл надо поместить в папку chain на вашей ноде, это системный файл базовых настроек)</i>
+
+<hr>
+    <b>Запросить последнее значение node_vector (вместе с next_key)</b><br>
+    <p>Адрес базовой ноды <input type=text size=20 name=base_node value="192.168.0.102:5555"><br></p>
+    <a href=# id=next_key>Запрос</a><br><span id=result4></span>
+
+<hr>
+<br>
+    <b>Создать правильыйн vector file c нужным nonce и hash для добавления в сеть</b><br>
+    <b>и запросить место в векторе</b><br>
+    <p>Адрес базовой ноды <input type=text size=20 name=base_node value="192.168.0.102:5555"><br></p>
+    <p>Ваш ip и port <input type=text size=20 name=ipport value="192.168.0.104:5555"><br></p>
+    <p>Адрес ноды делающей запрос <input type=text size=20 name=zapros_adr value="4GBN73Uq97TaXBA1RgRJ8K2mB7Gj"><br></p>
+    <a href=# id=make_nonce>Запрос</a><br> <br><span id=result5></span><br><br>br>
+
+<hr>
+<br>
+    <b>Запросить место в векторе</b><br>
+    <a href=# id=zapros>Запрос</a><br> <br><span id=result3></span><br><br>
+
+<hr>
+<br>
+
+{% endblock %}

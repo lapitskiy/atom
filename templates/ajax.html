@@ -1,0 +1,35 @@
+{% extends "main.html" %}
+{% block content %}
+
+<script type=text/javascript>
+  $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+</script>
+
+<script type=text/javascript>
+  $(function() {
+    $('a#calculate').bind('click', function() {
+      $.getJSON($SCRIPT_ROOT + '/ajax_get', {
+        send_wallet: $('input[name="send_wallet"]').val(),
+        send_atom: $('input[name="send_atom"]').val(),
+      }, function(data) {
+        $("#all_data").text(data.result['send_wallet'] + ';' +data.result['send_atom']);
+        $("#send_komiss").val(data.result['send_komis']);
+      });
+      return false;
+    });
+  });
+</script>
+<h1>jQuery Example</h1>
+
+
+<br><br>
+      <p><b>Кому переводим</b>
+    <input type=text size=10 name=send_wallet><br>
+      <p><b>Сумма перевода</b>
+    <input type=text size=10 name=send_atom><br>
+     <p><b>Комиссия (стандартно 1%)</b>
+    <input type=text size=10 name=send_komis id=send_komiss value="{{data}}"><br>
+   <span id=all_data>{{data}}</span>
+    <a href=# id=calculate>Отправить деньги</a>
+<br><br>
+{% endblock %}

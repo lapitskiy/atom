@@ -1,0 +1,60 @@
+{% extends "main.html" %}
+{% block content %}
+
+<h1>Кошелек</h1>
+Адрес вашего кошелька: <b>{{wallet_data['publickey_adress']}}</b> (пароль подтвержден: {{verify}})<br>
+
+Сумма денег на счету: <b>{{atom_sum}}</b> (Количество атомов в которых деньги {{count2}})<br>
+
+
+<script type=text/javascript>
+  $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+</script>
+
+<script type=text/javascript>
+  $(function() {
+    $('a#calculate').bind('click', function() {
+      $.getJSON($SCRIPT_ROOT + '/ajax_get',
+          {
+        send_wallet: $('input[name="send_wallet"]').val(),
+        send_atom: $('input[name="send_atom"]').val(),
+        send_komis: $('input[name="send_komis"]').val(),
+        verify: "{{verify}}",
+        atom_sum: "{{atom_sum}}",
+        privatkey_clear: "{{wallet_data.privatkey_clear}}",
+        publickey_clear: "{{wallet_data.publickey_clear}}",
+        publickey_adress: "{{wallet_data.publickey_adress}}"
+      }, function(data_back) {
+        $("#all_data").text(data_back.result['send_wallet'] + '; ' +data_back.result['send_atom'] + '; ' +data_back.result['verify']);
+        $("#send_komiss").val(data_back.result['send_komis']);
+        $("#result").text(data_back.result['result']);
+      });
+      return false;
+    });
+  });
+</script>
+
+<br><br>
+      <p><b>Кому переводим</b>
+    <input type=text size=20 name=send_wallet value="U12cyWUQMYBtFnuMCjrr2FmCfnS"><br>
+      <p><b>Сумма перевода</b>
+    <input type=text size=10 name=send_atom value="0.0003"><br>
+     <p><b>Комиссия (стандартно 1%)</b>
+    <input type=text size=10 name=send_komis id=send_komiss value="{{data_back}}"><br>
+    <span id=all_data></span><br>
+    Количество переведенных монет: <span id=result></span><br><br>
+    <a href=# id=calculate>Отправить деньги</a><br><br>
+
+Количество атомов в базе (dbSize): <b>{{len}}</b><br><br>
+{% for i in data_adr %}
+Атом {{i}}: Спины во владении {{data_adr[i]}}<br>
+{% endfor %}
+<br><br>
+Данные: <br>
+{% for i in data %}
+Атом {{i}}: Протоны {{data[i]}}<br>
+{% endfor %}
+<br><br>
+{{wallet_data}}
+    <br><br>
+{% endblock %}
