@@ -15,7 +15,9 @@
     $('a#calculate').bind('click', function() {
       $.getJSON($SCRIPT_ROOT + '/ajax_get',
           {
-        send_adr: $('input[name="send_adr"]').val()
+        send_adr: $('input[name="send_adr"]').val(),
+        send_pbkey: $('input[name="send_pbkey"]').val(),
+        send_prkey: $('input[name="send_prkey"]').val()
       }, function(data_back) {
         $("#result").text(data_back.result['send_adr']);
       });
@@ -60,7 +62,7 @@
     $('a#next_key').bind('click', function() {
       $.getJSON($SCRIPT_ROOT + '/next_key',
           {
-           base_node: $('input[name="base_node"]').val()
+           ip_node: $('#ip_node').val()
       }, function(data_back) {
         $("#result4").text(data_back.result);
       });
@@ -84,31 +86,63 @@
     });
   });
 </script>
+
+
+<script type=text/javascript>
+  $(function() {
+    $('a#genesistx').bind('click', function() {
+      $.getJSON($SCRIPT_ROOT + '/genesistx',
+          {
+              base_node: $('input[name="base_node"]').val()
+      }, function(data_back) {
+        $("#resulttx").text(data_back.result);
+      });
+      return false;
+    });
+  });
+</script>
+
+
+<script type=text/javascript>
+  $(function() {
+    $('a#activetrue').bind('click', function() {
+      $.getJSON($SCRIPT_ROOT + '/test_activetrue',
+          {
+            base_node: $('input[name="base_node"]').val()
+      }, function(data_back) {
+        $("#resultactive").text(data_back.result);
+      });
+      return false;
+    });
+  });
+</script>
 <br>
 <hr><br>
     <b>Создание файла config для ноды</b><br>
-    <p>Ваш кошелек atom <input type=text size=20 name=send_adr value="4GBN73Uq97TaXBA1RgRJ8K2mB7Gj">
+    <p>Ваш кошелек atom <input type=text size=20 name=send_adr value="3HyTmAhp8oBHAuSuUN1y1KRkdqgV">
     (на этот кошелек будут приходить выплаты)</p>
+    <p>Публичный ключ адреса <input type=text size=100 name=send_pbkey value="3121efe56775e86225b6d20b6a7534a52021845a252a9b07c5168171ac1b891317f5d3683b6cffe570aef9acbdeeb6ec89ee293225d51edfc66236038b863708"><br>
+    <p>Приватный ключ адреса <input type=text size=100 name=send_prkey value="74b02ae4139aff0478e06fc2d981f58bab2550a69aa1b1e139217ddda597de57"><br>
     <a href=# id=calculate>Создать файл</a><br><span id=result></span>
 <i>(файл надо поместить в папку chain на вашей ноде, это системный файл базовых настроек)</i>
 <hr>
     <b>Создание файла genesis и файла genesis node_vector</b><br>
-    <p>Адрес ноды создающей genesis блок <input type=text size=20 name=node_adr value="4GBN73Uq97TaXBA1RgRJ8K2mB7Gj"><br></p>
+    <p>Адрес ноды создающей genesis блок <input type=text size=20 name=node_adr value="3HyTmAhp8oBHAuSuUN1y1KRkdqgV"><br></p>
     <p>Послание в века <input type=text size=20 name=send_txt value="Залупа конская"> (блок будет тусоваться вечно не изменный)<br></p>
     <a href=# id=genesis>Создать файл</a><br><span id=result2></span><br>
 <i>(файл надо поместить в папку chain на вашей ноде, это системный файл базовых настроек)</i>
 
 <hr>
     <b>Запросить последнее значение node_vector (вместе с next_key)</b><br>
-    <p>Адрес базовой ноды <input type=text size=20 name=base_node value="192.168.0.102:5555"><br></p>
+    <textarea style="width:300px; height:150px;" id="ip_node" name="ip_node">192.168.0.103:5555</textarea>
     <a href=# id=next_key>Запрос</a><br><span id=result4></span>
 
 <hr>
 <br>
     <b>Создать правильыйн vector file c нужным nonce и hash для добавления в сеть</b><br>
     <b>и запросить место в векторе</b><br>
-    <p>Адрес базовой ноды <input type=text size=20 name=base_node value="192.168.0.102:5555"><br></p>
-    <p>Ваш ip и port <input type=text size=20 name=ipport value="192.168.0.104:5555"><br></p>
+    <p>Адрес базовой ноды <input type=text size=20 name=base_node value="192.168.0.103:5555"><br></p>
+    <p>Ваш ip и port <input type=text size=20 name=ipport value="192.168.0.102:5555"><br></p>
     <p>Адрес ноды делающей запрос <input type=text size=20 name=zapros_adr value="4GBN73Uq97TaXBA1RgRJ8K2mB7Gj"><br></p>
     <a href=# id=make_nonce>Запрос</a><br> <br><span id=result5></span><br><br>br>
 
@@ -116,6 +150,21 @@
 <br>
     <b>Запросить место в векторе</b><br>
     <a href=# id=zapros>Запрос</a><br> <br><span id=result3></span><br><br>
+
+<hr>
+<br>
+
+<hr>
+<br>
+    <b>Запустить Genesis транзакцию</b><br>
+    <a href=# id=genesistx>Запустить генезис tx</a><br> <br><span id=resulttx></span><br><br>
+
+<hr>
+<br>
+<hr>
+<br>
+    <b>Сервер</b><br>
+    <a href=# id=activetrue>Включить сервер + Сделать вектор ноды Active = True</a><br> <br><span id=resultactive></span><br><br>
 
 <hr>
 <br>

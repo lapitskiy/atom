@@ -3,6 +3,7 @@ from baking import *
 import requests
 from flask import Flask, jsonify, request, render_template, redirect, make_response
 from decimal import Decimal, getcontext
+from cl_node import *
 getcontext().prec = 7
 
 
@@ -12,7 +13,7 @@ app = Flask(__name__)
 node_identifier = str(uuid4()).replace('-', '')
 wallet = Wallet()  # Создаем объект кошелька
 dbatom = Baking()  # Создаем объект готовки печенья
-
+node = Node()
 
 @app.route('/', methods=['GET'])
 def index():
@@ -41,7 +42,7 @@ def zalypa():
     # r = redis.StrictRedis(host='localhost', db=2)
     # r.flushdb()
     # r.rpush('1', 'zalypa')
-    # r.rpush('1', 'zalypa2')
+    # r.rpush('1', 'zalypa2')--
     # r.rpush('1', 'zalypa3')
     # r.rpush('1', 'zalypa')
     # r.rpush('1', 'zalypa4')
@@ -140,7 +141,7 @@ def open_and_varify_file():
     return render_template('takewallet.html')
 
 
-@app.route('/ajax_get', methods=['GET', 'POST'])
+@app.route('/ajax_get_main', methods=['GET', 'POST'])
 def ajax_test():
     dict = {}
     msg = {}
@@ -163,9 +164,9 @@ def ajax_test():
 
     if dict['send_wallet'] != '' and dict['send_atom'] != '' and dict['atom_sum'] >= dict['send_atom']:
         node_url = 'http://localhost:5001/connect'
-        msg = {'send': dict['send_wallet'], 'from': dict['publickey_clear'], 'count': str(dict['send_atom']),'adr': dict['publickey_adress']}
+        msg = {'from': dict['send_wallet'], 'from_pbkey': dict['publickey_clear'], 'count': str(dict['send_atom']),'send': dict['publickey_adress'], 'send_komis':dict['send_komis']}
+        msg['thishash'] = node.thishash(msg)
         msg['sign'] = wallet.generate_sig(dict['privatkey_clear'], msg)
-        msg['send_komis'] = dict['send_komis']
         response = requests.post(node_url, data=msg)
         dict['result'] = response.text
     return jsonify(result=dict)

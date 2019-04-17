@@ -14,7 +14,7 @@
 <script type=text/javascript>
   $(function() {
     $('a#calculate').bind('click', function() {
-      $.getJSON($SCRIPT_ROOT + '/ajax_get',
+      $.getJSON($SCRIPT_ROOT + '/ajax_get_main',
           {
         send_wallet: $('input[name="send_wallet"]').val(),
         send_atom: $('input[name="send_atom"]').val(),

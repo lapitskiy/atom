@@ -1,0 +1,296 @@
+Metadata-Version: 2.1
+Name: aiohttp
+Version: 3.2.1
+Summary: Async http client/server framework (asyncio)
+Home-page: https://github.com/aio-libs/aiohttp/
+Author: Nikolay Kim
+Author-email: fafhrd91@gmail.com
+Maintainer: Nikolay Kim <fafhrd91@gmail.com>, Andrew Svetlov <andrew.svetlov@gmail.com>
+Maintainer-email: aio-libs@googlegroups.com
+License: Apache 2
+Platform: UNKNOWN
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Intended Audience :: Developers
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Operating System :: POSIX
+Classifier: Operating System :: MacOS :: MacOS X
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Topic :: Internet :: WWW/HTTP
+Classifier: Framework :: AsyncIO
+Requires-Python: >=3.5.3
+Requires-Dist: attrs (>=17.3.0)
+Requires-Dist: chardet (<4.0,>=2.0)
+Requires-Dist: multidict (<5.0,>=4.0)
+Requires-Dist: async-timeout (<4.0,>=3.0)
+Requires-Dist: yarl (<2.0,>=1.0)
+Requires-Dist: idna-ssl (>=1.0)
+
+==================================
+Async http client/server framework
+==================================
+
+.. image:: https://raw.githubusercontent.com/aio-libs/aiohttp/master/docs/_static/aiohttp-icon-128x128.png
+   :height: 64px
+   :width: 64px
+   :alt: aiohttp logo
+
+|
+
+.. image:: https://travis-ci.org/aio-libs/aiohttp.svg?branch=master
+   :target:  https://travis-ci.org/aio-libs/aiohttp
+   :align: right
+   :alt: Travis status for master branch
+
+.. image:: https://codecov.io/gh/aio-libs/aiohttp/branch/master/graph/badge.svg
+   :target: https://codecov.io/gh/aio-libs/aiohttp
+   :alt: codecov.io status for master branch
+
+.. image:: https://badge.fury.io/py/aiohttp.svg
+   :target: https://pypi.org/project/aiohttp
+   :alt: Latest PyPI package version
+
+.. image:: https://readthedocs.org/projects/aiohttp/badge/?version=latest
+   :target: http://docs.aiohttp.org/
+   :alt: Latest Read The Docs
+
+.. image:: https://badges.gitter.im/Join%20Chat.svg
+    :target: https://gitter.im/aio-libs/Lobby
+    :alt: Chat on Gitter
+
+Key Features
+============
+
+- Supports both client and server side of HTTP protocol.
+- Supports both client and server Web-Sockets out-of-the-box without the
+  Callback Hell.
+- Web-server has middlewares and pluggable routing.
+
+
+Getting started
+===============
+
+Client
+------
+
+To retrieve something from the web:
+
+.. code-block:: python
+
+  import aiohttp
+  import asyncio
+
+  async def fetch(session, url):
+      async with session.get(url) as response:
+          return await response.text()
+
+  async def main():
+      async with aiohttp.ClientSession() as session:
+          html = await fetch(session, 'http://python.org')
+          print(html)
+
+  if __name__ == '__main__':
+      loop = asyncio.get_event_loop()
+      loop.run_until_complete(main())
+
+
+Server
+------
+
+This is simple usage example:
+
+.. code-block:: python
+
+    from aiohttp import web
+
+    async def handle(request):
+        name = request.match_info.get('name', "Anonymous")
+        text = "Hello, " + name
+        return web.Response(text=text)
+
+    async def wshandle(request):
+        ws = web.WebSocketResponse()
+        await ws.prepare(request)
+
+        async for msg in ws:
+            if msg.type == web.WSMsgType.text:
+                await ws.send_str("Hello, {}".format(msg.data))
+            elif msg.type == web.WSMsgType.binary:
+                await ws.send_bytes(msg.data)
+            elif msg.type == web.WSMsgType.close:
+                break
+
+        return ws
+
+
+    app = web.Application()
+    app.add_routes([web.get('/', handle),
+                    web.get('/echo', wshandle),
+                    web.get('/{name}', handle)])
+
+    web.run_app(app)
+
+
+Documentation
+=============
+
+https://aiohttp.readthedocs.io/
+
+
+Demos
+=====
+
+https://github.com/aio-libs/aiohttp-demos
+
+
+External links
+==============
+
+* `Third party libraries
+  <http://aiohttp.readthedocs.io/en/latest/third_party.html>`_
+* `Built with aiohttp
+  <http://aiohttp.readthedocs.io/en/latest/built_with.html>`_
+* `Powered by aiohttp
+  <http://aiohttp.readthedocs.io/en/latest/powered_by.html>`_
+
+Feel free to make a Pull Request for adding your link to these pages!
+
+
+Communication channels
+======================
+
+*aio-libs* google group: https://groups.google.com/forum/#!forum/aio-libs
+
+Feel free to post your questions and ideas here.
+
+*gitter chat* https://gitter.im/aio-libs/Lobby
+
+We support `Stack Overflow
+<https://stackoverflow.com/questions/tagged/aiohttp>`_.
+Please add *aiohttp* tag to your question there.
+
+Requirements
+============
+
+- Python >= 3.5.3
+- async-timeout_
+- attrs_
+- chardet_
+- multidict_
+- yarl_
+
+Optionally you may install the cChardet_ and aiodns_ libraries (highly
+recommended for sake of speed).
+
+.. _chardet: https://pypi.python.org/pypi/chardet
+.. _aiodns: https://pypi.python.org/pypi/aiodns
+.. _attrs: https://github.com/python-attrs/attrs
+.. _multidict: https://pypi.python.org/pypi/multidict
+.. _yarl: https://pypi.python.org/pypi/yarl
+.. _async-timeout: https://pypi.python.org/pypi/async_timeout
+.. _cChardet: https://pypi.python.org/pypi/cchardet
+
+License
+=======
+
+``aiohttp`` is offered under the Apache 2 license.
+
+
+Keepsafe
+========
+
+The aiohttp community would like to thank Keepsafe
+(https://www.getkeepsafe.com) for it's support in the early days of
+the project.
+
+
+Source code
+===========
+
+The latest developer version is available in a github repository:
+https://github.com/aio-libs/aiohttp
+
+Benchmarks
+==========
+
+If you are interested in by efficiency, AsyncIO community maintains a
+list of benchmarks on the official wiki:
+https://github.com/python/asyncio/wiki/Benchmarks
+
+=========
+Changelog
+=========
+
+..
+    You should *NOT* be adding new change log entries to this file, this
+    file is managed by towncrier. You *may* edit previous change logs to
+    fix problems like typo corrections or such.
+    To add a new change log entry, please see
+    https://pip.pypa.io/en/latest/development/#adding-a-news-entry
+    we named the news folder "changes".
+
+    WARNING: Don't drop the next directive!
+
+.. towncrier release notes start
+
+3.2.1 (2018-05-10)
+==================
+
+- Don't reuse a connection with the same URL but different proxy/TLS settings
+  (#2981)
+
+
+3.2.0 (2018-05-06)
+==================
+
+Features
+--------
+
+- Raise ``TooManyRedirects`` exception when client gets redirected too many
+  times instead of returning last response. (`#2631 <https://github.com/aio-libs/aiohttp/pull/2631>`_)
+- Extract route definitions into separate ``web_routedef.py`` file (`#2876 <https://github.com/aio-libs/aiohttp/pull/2876>`_)
+- Raise an exception on request body reading after sending response. (`#2895 <https://github.com/aio-libs/aiohttp/pull/2895>`_)
+- ClientResponse and RequestInfo now have real_url property, which is request
+  url without fragment part being stripped (`#2925 <https://github.com/aio-libs/aiohttp/pull/2925>`_)
+- Speed up connector limiting (`#2937 <https://github.com/aio-libs/aiohttp/pull/2937>`_)
+- Added and links property for ClientResponse object (`#2948 <https://github.com/aio-libs/aiohttp/pull/2948>`_)
+- Add ``request.config_dict`` for exposing nested applications data. (`#2949 <https://github.com/aio-libs/aiohttp/pull/2949>`_)
+- Speed up HTTP headers serialization, server micro-benchmark runs 5% faster
+  now. (`#2957 <https://github.com/aio-libs/aiohttp/pull/2957>`_)
+- Apply assertions in debug mode only (`#2966 <https://github.com/aio-libs/aiohttp/pull/2966>`_)
+
+
+Bugfixes
+--------
+
+- expose property `app` for TestClient (`#2891 <https://github.com/aio-libs/aiohttp/pull/2891>`_)
+- Call on_chunk_sent when write_eof takes as a param the last chunk (`#2909 <https://github.com/aio-libs/aiohttp/pull/2909>`_)
+- A closing bracket was added to `__repr__` of resources (`#2935 <https://github.com/aio-libs/aiohttp/pull/2935>`_)
+- Fix compression of FileResponse (`#2942 <https://github.com/aio-libs/aiohttp/pull/2942>`_)
+- Fixes some bugs in the limit connection feature (`#2964 <https://github.com/aio-libs/aiohttp/pull/2964>`_)
+
+
+Improved Documentation
+----------------------
+
+- Drop ``async_timeout`` usage from documentation for client API in favor of
+  ``timeout`` parameter. (`#2865 <https://github.com/aio-libs/aiohttp/pull/2865>`_)
+- Improve Gunicorn logging documentation (`#2921 <https://github.com/aio-libs/aiohttp/pull/2921>`_)
+- Replace multipart writer `.serialize()` method with `.write()` in
+  documentation. (`#2965 <https://github.com/aio-libs/aiohttp/pull/2965>`_)
+
+
+Deprecations and Removals
+-------------------------
+
+- Deprecate Application.make_handler() (`#2938 <https://github.com/aio-libs/aiohttp/pull/2938>`_)
+
+
+Misc
+----
+
+- #2958
+
